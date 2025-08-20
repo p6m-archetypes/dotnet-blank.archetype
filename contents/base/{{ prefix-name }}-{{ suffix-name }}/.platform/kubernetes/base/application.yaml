@@ -1,0 +1,17 @@
+apiVersion: meta.p6m.dev/v1alpha1
+kind: PlatformApplication
+metadata:
+  name: {{ prefix-name }}-{{ suffix-name }}
+  labels:
+    p6m.dev/app: {{ prefix-name }}-{{ suffix-name }}
+spec:
+  config:
+    ASPNETCORE_URLS: "http://+:80"
+  resources: 
+    postgres:
+      - name: {{ prefix-name }}-{{ suffix-name }}
+  deployment:
+    image: {{ prefix-name }}-{{ suffix-name }}:latest
+    ports:
+      - protocol: http
+        port: 80
