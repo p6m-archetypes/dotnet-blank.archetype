@@ -26,6 +26,7 @@ jobs:
           password: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
       - name: Cut Patch Version
+        if: github.ref_name == 'main'
         id: cut-patch
         uses: p6m-actions/dotnet-cut-tag@v1
         with:
@@ -34,10 +35,11 @@ jobs:
       - name: Build .NET Application
         uses: p6m-actions/dotnet-build@v1
         with:
-          run-tests: false
+          run-tests: true
           version: ${{'{'}}{ steps.cut-patch.outputs.version }}
 
       - name: Login to Docker Repository
+        if: github.ref_name == 'main'  
         uses: p6m-actions/docker-repository-login@v1
         with:
           registry: ${{'{'}}{ vars.ARTIFACTORY_HOSTNAME }}
@@ -45,10 +47,12 @@ jobs:
           password: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
       - name: Set up Docker Buildx
+        if: github.ref_name == 'main'  
         id: buildx
         uses: p6m-actions/docker-buildx-setup@v1
 
       - name: Build and Publish Docker Image
+        if: github.ref_name == 'main'  
         id: docker-publish
         uses: p6m-actions/docker-buildx-build-publish@v1
         with:
@@ -72,10 +76,12 @@ jobs:
           NUGET_API_KEY: "${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}:${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}"
 
       - name: Make Artifacts
+        if: github.ref_name == 'main'  
         run: |
           echo '${{'{'}}{ steps.docker-publish.outputs.image-digest }}' | tee digest.txt
 
       - uses: ncipollo/release-action@v1
+        if: github.ref_name == 'main'  
         with:
           name: Version ${{'{'}}{ steps.cut-patch.outputs.version }}
           tag: ${{'{'}}{ steps.cut-patch.outputs.tag }}
@@ -88,6 +94,7 @@ jobs:
             Docker image digest: `${{'{'}}{ steps.docker-publish.outputs.image-digest }}`
       
       - name: Update Application Manifest
+        if: github.ref_name == 'main'  
         uses: p6m-actions/platform-application-manifest-dispatch@v1
         with:
           repository: ${{'{'}}{ github.repository }}
