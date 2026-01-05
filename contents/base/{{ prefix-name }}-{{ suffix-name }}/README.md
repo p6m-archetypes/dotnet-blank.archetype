@@ -27,9 +27,8 @@ This is a completely blank .NET project. You'll need to add:
 
 ### GitHub Actions
 - `build.yml` - Build and deploy to development
-- `promote-stg.yml` - Promote to staging environment  
-- `promote-prd.yml` - Promote to production environment
-- `cut-tag.yml` - Cut release tags
+- `cut-tag.yml` - Cut patch, minor or major release tags
+- `promote-stg.yml` - Promote to an environment
 
 ### Kubernetes Platform
 - `application.yaml` - Platform application configuration
