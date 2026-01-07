@@ -1,4 +1,4 @@
-name: Promote Tag
+name: 3. Promote Tag
 
 on:
   workflow_dispatch:
