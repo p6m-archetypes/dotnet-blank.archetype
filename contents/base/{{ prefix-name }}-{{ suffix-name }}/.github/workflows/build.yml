@@ -45,24 +45,21 @@ jobs:
           password: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
       - name: Set up Docker Buildx
-        if: github.ref_name == 'main'  
         id: buildx
         uses: p6m-actions/docker-buildx-setup@v1
 
       - name: Build and Publish Docker Image
-        if: github.ref_name == 'main'  
         id: docker-publish
         uses: p6m-actions/docker-buildx-build-publish@v1
         with:
           image-name: {{ prefix-name }}-{{ suffix-name }}-server
-          image-tag: ${{'{'}}{ steps.cut-patch.outputs.version }}
+          image-tag: ${{'{'}}{ steps.cut-patch.outputs.version || format('dev-{0}', github.sha) }}
           registry: ${{'{'}}{ vars.ARTIFACTORY_HOSTNAME }}/${{'{'}}{ vars.ARTIFACTORY_PROJECT }}-docker-local/applications
           platforms: linux/amd64,linux/arm64
           push: ${{'{'}}{ github.ref_name == 'main' }}
           skip-setup: true
           builder-name: ${{'{'}}{ steps.buildx.outputs.name }}
           secrets: |
-            artifactory-token=${{'{'}}{ secrets.ARTIFACTORY_TOKEN }}
             artifactory-username: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
             artifactory-identity-token: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
