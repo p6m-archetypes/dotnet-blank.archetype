@@ -4,7 +4,7 @@ on:
 
 permissions: write-all
 
-name: 1. Build & Deploy to Dev
+name: 1. Build
 
 env:
   ARTIFACTORY_USERNAME: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
@@ -12,10 +12,10 @@ env:
 
 jobs:
   build:
-    name: Build & Deploy
+    name: Build
     runs-on: ubuntu-latest
     outputs:
-      digest: ${{'{'}}{  steps.docker-publish.outputs.image-digest }}
+      digest: ${{'{'}}{ steps.docker-publish.outputs.image-digest }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -58,7 +58,7 @@ jobs:
           image-tag: ${{'{'}}{ steps.cut-patch.outputs.version }}
           registry: ${{'{'}}{ vars.ARTIFACTORY_HOSTNAME }}/${{'{'}}{ vars.ARTIFACTORY_PROJECT }}-docker-local/applications
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{'{'}}{ github.ref_name == 'main' }}
           skip-setup: true
           builder-name: ${{'{'}}{ steps.buildx.outputs.name }}
           secrets: |
@@ -106,7 +106,7 @@ jobs:
           repository: ${{'{'}}{ github.repository }}
           image-name: {{ prefix-name }}-{{ suffix-name }}
           environment: "dev"
-          digest: ${{'{'}}{ sneeds.build.outputs.digest }}
+          digest: ${{'{'}}{ needs.build.outputs.digest }}
           update-manifest-token: ${{'{'}}{ secrets.UPDATE_MANIFEST_TOKEN }}
           platform-dispatch-url: ${{'{'}}{ vars.PLATFORM_DISPATCH_URL }}
           directory-name: {{ prefix-name }}-{{ suffix-name }}        
