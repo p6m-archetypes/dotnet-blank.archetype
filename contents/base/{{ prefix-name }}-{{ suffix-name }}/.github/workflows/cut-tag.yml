@@ -36,17 +36,17 @@ jobs:
           username: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
           password: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
+      - name: Build .NET Application
+        uses: p6m-actions/dotnet-build@v1
+        with:
+          run-tests: false
+          publish-artifacts: true
+
       - name: Cut Tag
         id: cut-tag
         uses: p6m-actions/dotnet-cut-tag@v1
         with:
           version-level: ${{'{'}}{ inputs.version-level }}
-
-      - name: Build .NET Application
-        uses: p6m-actions/dotnet-build@v1
-        with:
-          run-tests: false
-          version: ${{'{'}}{ steps.cut-tag.outputs.version }}
 
       - name: Login to Docker Repository
         uses: p6m-actions/docker-repository-login@v1
@@ -85,7 +85,8 @@ jobs:
         run: |
           echo '${{'{'}}{ steps.docker-publish.outputs.image-digest }}' | tee digest.txt
 
-      - uses: ncipollo/release-action@v1
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
         with:
           name: Version ${{'{'}}{ steps.cut-tag.outputs.version }}
           tag: ${{'{'}}{ steps.cut-tag.outputs.tag }}
