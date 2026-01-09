@@ -60,8 +60,8 @@ jobs:
           skip-setup: true
           builder-name: ${{'{'}}{ steps.buildx.outputs.name }}
           secrets: |
-            artifactory-username: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
-            artifactory-identity-token: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
+            artifactory-username=${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
+            artifactory-identity-token=${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
       - name: Publish to .NET Repository
         if: github.ref_name == 'main'

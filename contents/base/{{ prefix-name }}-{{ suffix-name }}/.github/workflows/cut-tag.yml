@@ -28,14 +28,6 @@ jobs:
       - name: Setup .NET
         uses: p6m-actions/dotnet-setup@v1
 
-      - name: Login to .NET Repository
-        uses: p6m-actions/dotnet-repository-login@v1
-        with:
-          repository: ${{'{'}}{ vars.ARTIFACTORY_PROJECT }}-nuget
-          repository-url: https://${{'{'}}{ vars.ARTIFACTORY_HOSTNAME }}/artifactory/api/nuget/${{'{'}}{ vars.ARTIFACTORY_PROJECT }}-nuget
-          username: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
-          password: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
-
       - name: Build .NET Application
         uses: p6m-actions/dotnet-build@v1
         with:
@@ -71,8 +63,8 @@ jobs:
           skip-setup: true
           builder-name: ${{'{'}}{ steps.buildx.outputs.name }}
           secrets: |
-            artifactory-username: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
-            artifactory-identity-token: ${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
+            artifactory-username=${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
+            artifactory-identity-token=${{'{'}}{ secrets.ARTIFACTORY_IDENTITY_TOKEN }}
 
       - name: Publish to .NET Repository
         uses: p6m-actions/dotnet-repository-publish@v1
