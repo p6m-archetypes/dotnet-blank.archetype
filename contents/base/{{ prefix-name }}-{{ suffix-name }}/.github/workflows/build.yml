@@ -1,10 +1,10 @@
+name: 1. Build
+
 on:
   - push
   - workflow_dispatch
 
 permissions: write-all
-
-name: 1. Build
 
 env:
   ARTIFACTORY_USERNAME: ${{'{'}}{ secrets.ARTIFACTORY_USERNAME }}
